@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSVP Admin — Jamie &amp; Beth</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #FFF8EE;
+    color: #3B2A22;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  :root {
+    --ivory:   #FFF8EE;
+    --sand:    #F2E3CF;
+    --gold:    #C8A45D;
+    --terra:   #C47A52;
+    --sage:    #7F9A78;
+    --cocoa:   #3B2A22;
+    --soft:    #7A6657;
+    --card-bg: #FAF3E6;
+  }
+
+  /* Login */
+  #login-screen {
+    max-width: 360px; margin: 4rem auto; text-align: center;
+  }
+  #login-screen h1 {
+    font-family: Georgia, serif; font-style: italic;
+    font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--cocoa);
+  }
+  #login-screen p { color: var(--soft); margin-bottom: 1.5rem; font-size: 0.9rem; }
+  #login-screen input {
+    width: 100%; padding: 0.7rem 1rem;
+    border: 1.5px solid rgba(200,164,93,0.5);
+    border-radius: 6px; background: var(--card-bg);
+    font-size: 1rem; margin-bottom: 0.8rem;
+    text-align: center; letter-spacing: 0.1em; outline: none;
+  }
+  #login-screen button {
+    width: 100%; padding: 0.75rem;
+    background: var(--terra); color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 0.95rem; cursor: pointer;
+  }
+  #login-err { color: #c0392b; font-size: 0.85rem; margin-top: 0.5rem; min-height: 1.2em; }
+
+  /* Admin content */
+  #admin-content { display: none; max-width: 900px; margin: 0 auto; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 0.5rem;
+  }
+  header h1 {
+    font-family: Georgia, serif; font-style: italic;
+    font-size: 1.6rem; color: var(--cocoa);
+  }
+  .logout-btn {
+    background: none; border: 1px solid var(--terra);
+    color: var(--terra); padding: 0.4rem 1rem;
+    border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+  }
+
+  /* Summary cards */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border-radius: 10px; padding: 1.2rem;
+    text-align: center;
+    border: 1.5px solid rgba(200,164,93,0.35);
+  }
+  .stat-card.yes  { border-color: var(--sage); background: rgba(213,229,208,0.35); }
+  .stat-card.no   { border-color: rgba(196,122,82,0.4); }
+  .stat-card.cost { border-color: var(--gold); background: rgba(232,213,163,0.25); }
+  .stat-num {
+    font-family: Georgia, serif; font-size: 2.2rem;
+    color: var(--cocoa); line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem; color: var(--soft);
+    letter-spacing: 0.08em; margin-top: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  /* Submissions table */
+  .section-title {
+    font-family: Georgia, serif; font-size: 1.1rem;
+    margin-bottom: 0.8rem; color: var(--cocoa);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(200,164,93,0.3);
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.88rem; margin-bottom: 2rem;
+  }
+  th {
+    background: rgba(200,164,93,0.2);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; color: var(--soft);
+    font-size: 0.75rem; letter-spacing: 0.05em;
+  }
+  td { padding: 0.6rem 0.8rem; border-top: 1px solid rgba(200,164,93,0.15); vertical-align: top; }
+  tr:hover td { background: rgba(200,164,93,0.06); }
+  .yes-badge  { color: var(--sage); font-weight: 600; }
+  .no-badge   { color: var(--terra); font-weight: 600; }
+  .note-cell  { font-style: italic; color: var(--soft); max-width: 220px; }
+
+  /* Setup instructions */
+  .setup-box {
+    background: rgba(232,213,163,0.25);
+    border: 1.5px solid rgba(200,164,93,0.4);
+    border-radius: 10px; padding: 1.4rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem; color: var(--soft);
+    line-height: 1.7;
+  }
+  .setup-box strong { color: var(--cocoa); }
+  .setup-box code {
+    background: rgba(200,164,93,0.2);
+    padding: 0.1rem 0.4rem; border-radius: 3px;
+    font-size: 0.85rem; color: var(--cocoa);
+  }
+
+  #no-data {
+    text-align: center; color: var(--soft);
+    font-style: italic; padding: 2rem 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <h1>Jamie &amp; Beth</h1>
+  <p>RSVP Admin — enter your admin password to continue.</p>
+  <input type="password" id="admin-pw" placeholder="Admin password"
+         onkeydown="if(event.key==='Enter')adminLogin()">
+  <button onclick="adminLogin()">Sign in &rarr;</button>
+  <div id="login-err"></div>
+</div>
+
+<!-- Admin content -->
+<div id="admin-content">
+  <header>
+    <h1>RSVP Responses</h1>
+    <button class="logout-btn" onclick="adminLogout()">Sign out</button>
+  </header>
+
+  <div class="setup-box" id="setup-box">
+    <strong>One-time setup per device:</strong><br>
+    Go to <strong>app.netlify.com → User settings → Applications → Personal access tokens</strong>, create a token, paste it below and click Save. It will be remembered on this device.<br><br>
+    <strong>Netlify API Token:</strong><br>
+    <input type="text" id="cfg-token" placeholder="nfp_xxxxxxxxxxxx"
+           style="width:100%;margin:0.4rem 0 0.8rem;padding:0.5rem;border:1px solid rgba(200,164,93,0.4);border-radius:4px;background:var(--card-bg);font-size:0.85rem;">
+    <input type="hidden" id="cfg-form-id" value="6a2ea4e9f496a300089e0b20">
+    <button onclick="saveConfig()"
+            style="background:var(--terra);color:#fff;border:none;padding:0.5rem 1.4rem;border-radius:5px;cursor:pointer;font-size:0.85rem;">
+      Save &amp; Load Responses
+    </button>
+  </div>
+
+  <div id="summary" class="summary-grid" style="display:none"></div>
+  <div id="responses-section" style="display:none">
+    <div class="section-title">All responses</div>
+    <div style="overflow-x:auto">
+      <table id="responses-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Attending</th>
+            <th>Adults</th>
+            <th>Children</th>
+            <th>Message</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="responses-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="no-data" style="display:none">No responses yet — check back soon!</div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = 'baliAdmin2028';
+const ADMIN_KEY      = 'jb_admin_auth';
+
+function adminLogin() {
+  const val = document.getElementById('admin-pw').value.trim();
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem(ADMIN_KEY, '1');
+    showAdmin();
+  } else {
+    document.getElementById('login-err').textContent = 'Incorrect password.';
+    document.getElementById('admin-pw').value = '';
+  }
+}
+function adminLogout() {
+  sessionStorage.removeItem(ADMIN_KEY);
+  location.reload();
+}
+
+function showAdmin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-content').style.display = 'block';
+  // Pre-fill saved config
+  const token  = localStorage.getItem('jb_token')  || '';
+  const formId = localStorage.getItem('jb_form_id') || '';
+  document.getElementById('cfg-token').value   = token;
+  document.getElementById('cfg-form-id').value = formId;
+  if (token && formId) loadResponses(token, formId);
+}
+
+if (sessionStorage.getItem(ADMIN_KEY) === '1') showAdmin();
+
+function saveConfig() {
+  const token  = document.getElementById('cfg-token').value.trim();
+  const formId = '6a2ea4e9f496a300089e0b20';
+  if (!token) { alert('Please enter your Netlify API token.'); return; }
+  localStorage.setItem('jb_token',   token);
+  localStorage.setItem('jb_form_id', formId);
+  loadResponses(token, formId);
+}
+
+function loadResponses(token, formId) {
+  fetch(`https://api.netlify.com/api/v1/forms/${formId}/submissions?access_token=${token}`)
+    .then(r => r.json())
+    .then(data => {
+      if (!Array.isArray(data) || data.length === 0) {
+        document.getElementById('no-data').style.display = 'block';
+        return;
+      }
+      document.getElementById('setup-box').style.display = 'none';
+      document.getElementById('summary').style.display = 'grid';
+      document.getElementById('responses-section').style.display = 'block';
+      renderSummary(data);
+      renderTable(data);
+    })
+    .catch(() => alert('Could not load responses. Check your token and form ID.'));
+}
+
+function renderSummary(data) {
+  const yes      = data.filter(s => s.data.attending && s.data.attending.startsWith('Yes'));
+  const no       = data.filter(s => s.data.attending && s.data.attending.startsWith('No'));
+  const adults   = data.reduce((a,s) => a + (parseInt(s.data.adults)   || 0), 0);
+  const children = data.reduce((a,s) => a + (parseInt(s.data.children) || 0), 0);
+  document.getElementById('summary').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${data.length}</div><div class="stat-label">Total responses</div></div>
+    <div class="stat-card yes"><div class="stat-num">${yes.length}</div><div class="stat-label">Yes</div></div>
+    <div class="stat-card no"><div class="stat-num">${no.length}</div><div class="stat-label">No</div></div>
+    <div class="stat-card"><div class="stat-num">${adults}</div><div class="stat-label">Adults (yes)</div></div>
+    <div class="stat-card"><div class="stat-num">${children}</div><div class="stat-label">Children (yes)</div></div>
+  `;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('responses-body');
+  tbody.innerHTML = data.map(s => {
+    const d    = s.data;
+    const date = new Date(s.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+    const cls  = d.attending && d.attending.startsWith('Yes') ? 'yes-badge' : 'no-badge';
+    return `<tr>
+      <td><strong>${d.name || '—'}</strong></td>
+      <td class="${cls}">${d.attending || '—'}</td>
+      <td>${d.adults   || '0'}</td>
+      <td>${d.children || '0'}</td>
+      <td class="note-cell">${d.message || ''}</td>
+      <td style="white-space:nowrap;color:var(--soft)">${date}</td>
+    </tr>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

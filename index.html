@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jamie &amp; Beth &mdash; Bali Wedding 2028</title>
+<style>
+  /* ── Reset & base ─────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #FFF8EE;
+    color: #3B2A22;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* ── Colour tokens ───────────────────────────────────────────────── */
+  :root {
+    --ivory:      #FFF8EE;
+    --sand:       #F2E3CF;
+    --gold:       #C8A45D;
+    --gold-light: #E8D5A3;
+    --terra:      #C47A52;
+    --terra-light:#DDA080;
+    --sage:       #7F9A78;
+    --sage-faint: #D5E5D0;
+    --cocoa:      #3B2A22;
+    --cocoa-soft: #7A6657;
+    --card-bg:    #FAF3E6;
+  }
+
+  /* ── Typography ──────────────────────────────────────────────────── */
+  h1, h2, h3 { font-weight: normal; }
+  .script { font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif; font-style: italic; }
+  .sans   { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  /* ── Password screen ────────────────────────────────────────────── */
+  #password-screen {
+    position: fixed; inset: 0;
+    background: var(--cocoa);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  #password-screen.hidden { display: none; }
+  #password-screen h1 {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--gold-light);
+  }
+  #password-screen p {
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  #password-screen input {
+    padding: 0.75rem 1.2rem;
+    border: 1.5px solid var(--gold);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 1rem;
+    font-family: Georgia, serif;
+    text-align: center;
+    letter-spacing: 0.1em;
+    width: 100%;
+    max-width: 280px;
+    outline: none;
+  }
+  #password-screen input::placeholder { color: rgba(255,255,255,0.35); }
+  #password-screen button {
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%; max-width: 280px;
+  }
+  #password-screen button:hover { background: #a8623e; }
+  #password-error {
+    color: #ff8a80;
+    font-size: 0.85rem;
+    font-style: italic;
+    min-height: 1.2em;
+  }
+  .pw-diamond {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    margin: 0 auto;
+  }
+
+  /* ── Countdown ───────────────────────────────────────────────────── */
+  .countdown {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-bottom: 1.8rem;
+  }
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .countdown-num {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--gold-light);
+    line-height: 1;
+    min-width: 2ch;
+    text-align: center;
+  }
+  .countdown-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .countdown-sep {
+    font-size: 1.8rem;
+    color: rgba(255,255,255,0.3);
+    align-self: flex-start;
+    padding-top: 0.15rem;
+  }
+
+  /* ── Hero ────────────────────────────────────────────────────────── */
+  #hero {
+    position: relative;
+    height: 100svh;
+    min-height: 500px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-slideshow {
+    position: absolute; inset: 0;
+  }
+  .hero-slide {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.4s ease-in-out;
+  }
+  .hero-slide.active { opacity: 1; }
+
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(30,16,8,0.62) 0%,
+      rgba(30,16,8,0.30) 55%,
+      rgba(30,16,8,0.55) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    padding: 2rem;
+    max-width: 680px;
+  }
+  .hero-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    color: var(--gold-light);
+    margin-bottom: 1.2rem;
+    opacity: 0.92;
+  }
+  .hero-names {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    font-style: italic;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  .hero-subtitle {
+    font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+    letter-spacing: 0.06em;
+    color: var(--gold-light);
+    margin-bottom: 1.4rem;
+  }
+  .hero-date {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.82);
+    margin-bottom: 2.2rem;
+  }
+  .hero-divider {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin-bottom: 2.4rem;
+  }
+  .hero-divider::before,
+  .hero-divider::after {
+    content: '';
+    flex: 1; max-width: 80px;
+    height: 1px;
+    background: var(--gold-light);
+    opacity: 0.6;
+  }
+  .diamond {
+    width: 8px; height: 8px;
+    background: var(--gold-light);
+    transform: rotate(45deg);
+  }
+  .hero-rsvp-btn {
+    display: inline-block;
+    border: 1.5px solid var(--gold-light);
+    color: var(--gold-light);
+    text-decoration: none;
+    padding: 0.7rem 2rem;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    transition: background 0.2s, color 0.2s;
+    backdrop-filter: blur(4px);
+    background: rgba(30,16,8,0.3);
+  }
+  .hero-rsvp-btn:hover {
+    background: var(--gold-light);
+    color: var(--cocoa);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.55);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    animation: bounce 2s infinite;
+    z-index: 2;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── Music toggle ─────────────────────────────────────────────────── */
+  #music-wrap {
+    position: fixed;
+    top: 1.1rem; right: 1.1rem;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #music-hint {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--gold-light);
+    background: rgba(30,16,8,0.55);
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid rgba(200,164,93,0.4);
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  #music-hint.hidden { display: none; }
+  @keyframes pulse {
+    0%,100% { opacity: 0.7; }
+    50%      { opacity: 1; }
+  }
+  #music-btn {
+    background: rgba(30,16,8,0.55);
+    border: 1px solid var(--gold-light);
+    color: var(--gold-light);
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  #music-btn:hover { background: rgba(30,16,8,0.8); }
+
+  /* ── Section wrapper ─────────────────────────────────────────────── */
+  .section {
+    padding: 4rem 1.2rem;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .section-wide {
+    padding: 4rem 1.2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* ── Gold divider ─────────────────────────────────────────────────── */
+  .gold-rule {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin: 0.8rem 0 1.8rem;
+  }
+  .gold-rule::before, .gold-rule::after {
+    content: ''; flex: 1; max-width: 120px;
+    height: 1px; background: var(--gold); opacity: 0.55;
+  }
+  .gold-rule .diamond-sm {
+    width: 7px; height: 7px;
+    background: var(--gold); transform: rotate(45deg);
+  }
+
+  /* ── Section heading ─────────────────────────────────────────────── */
+  .sec-head {
+    display: flex; align-items: center; gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+  .sec-bar {
+    width: 4px; height: 1.4em;
+    background: var(--terra); border-radius: 2px; flex-shrink: 0;
+  }
+  .sec-head h2 {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    font-size: 1.2rem;
+    color: var(--cocoa);
+  }
+
+  /* ── Intro ────────────────────────────────────────────────────────── */
+  #intro { text-align: center; }
+  #intro .tagline {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--terra);
+    margin-bottom: 1.2rem;
+  }
+  #intro p { color: var(--cocoa); max-width: 640px; margin: 0 auto 0.9rem; }
+  #intro .note {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--cocoa-soft);
+    max-width: 640px;
+    margin: 1rem auto 0;
+    line-height: 1.6;
+  }
+
+  /* ── Date pills ───────────────────────────────────────────────────── */
+  .pills {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
+    margin: 1.5rem 0 0.6rem;
+  }
+  @media(min-width: 480px) {
+    .pills { grid-template-columns: repeat(4, 1fr); }
+  }
+  .pill {
+    background: rgba(242,227,207,0.55);
+    border: 1px solid rgba(200,164,93,0.5);
+    border-radius: 8px;
+    padding: 0.7rem 0.5rem;
+    text-align: center;
+  }
+  .pill-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.68rem;
+    color: var(--cocoa-soft);
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .pill-value {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: var(--cocoa);
+  }
+  .dates-note {
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--cocoa-soft);
+    margin-top: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* ── Cards ────────────────────────────────────────────────────────── */
+  .card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-gold  { border: 1.5px solid rgba(200,164,93,0.55); }
+  .card-sage  { border: 1.5px solid rgba(127,154,120,0.45); background: rgba(213,229,208,0.35); }
+  .card-sand  { border: 1.5px solid rgba(221,160,128,0.45); background: rgba(242,227,207,0.3); }
+  .card-plain { border: 1.5px solid rgba(200,164,93,0.2); }
+
+  .card ul {
+    list-style: none;
+    margin-top: 0.7rem;
+  }
+  .card ul li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.45rem;
+    font-size: 0.95rem;
+    color: var(--cocoa);
+  }
+  .card ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.52em;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .card ul li.terra::before { background: var(--terra); }
+  .card ul li.sage::before  { background: var(--sage); }
+
+  .card .sub-note {
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--cocoa-soft);
+    padding-left: 1.1rem;
+    margin-top: -0.25rem;
+    margin-bottom: 0.45rem;
+  }
+  .card .note {
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--cocoa-soft);
+    margin-top: 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(200,164,93,0.2);
+  }
+
+  /* ── Two-col cards ────────────────────────────────────────────────── */
+  .card-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media(min-width: 560px) {
+    .card-row { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── Cost table ───────────────────────────────────────────────────── */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin-top: 0.8rem;
+  }
+  .cost-table thead tr {
+    background: rgba(232,213,163,0.4);
+  }
+  .cost-table th {
+    padding: 0.55rem 0.8rem;
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.82rem;
+    color: var(--cocoa);
+  }
+  .cost-table th:not(:first-child) { text-align: center; }
+  .cost-table td {
+    padding: 0.5rem 0.8rem;
+    border-top: 1px solid rgba(200,164,93,0.15);
+    color: var(--cocoa);
+  }
+  .cost-table td:not(:first-child) { text-align: center; }
+  .cost-table tr.total-row {
+    background: rgba(196,122,82,0.10);
+    font-weight: bold;
+  }
+  .cost-table tr.total-row td:not(:first-child) { color: var(--terra); }
+  .table-note {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--cocoa-soft);
+    margin-top: 0.6rem;
+  }
+
+  /* ── Drink price list ─────────────────────────────────────────────── */
+  .drink-list { margin-top: 0.7rem; }
+  .drink-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.3rem 0;
+    border-bottom: 1px dotted rgba(200,164,93,0.3);
+    font-size: 0.9rem;
+  }
+  .drink-row:last-child { border-bottom: none; }
+  .drink-price { font-style: italic; color: var(--cocoa-soft); }
+
+  /* ── Pay steps ────────────────────────────────────────────────────── */
+  .pay-step {
+    display: flex; gap: 0.6rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.95rem;
+  }
+  .step-num {
+    font-weight: bold; color: var(--terra);
+    min-width: 1.4rem; flex-shrink: 0;
+  }
+  .step-body b { color: var(--cocoa); }
+  .pay-italic {
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--cocoa-soft);
+    margin-top: 0.6rem;
+  }
+
+  /* ── Photo gallery ────────────────────────────────────────────────── */
+  #gallery {
+    background: var(--cocoa);
+    padding: 3rem 1rem;
+  }
+  #gallery h2 {
+    text-align: center;
+    color: var(--gold-light);
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-style: italic;
+    font-size: 1.6rem;
+    margin-bottom: 1.8rem;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  @media(min-width: 600px) {
+    .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media(min-width: 900px) {
+    .gallery-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .gallery-img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+    transition: transform 0.3s, opacity 0.3s;
+    cursor: pointer;
+  }
+  .gallery-img:hover { transform: scale(1.03); opacity: 0.92; }
+
+  /* ── Lightbox ─────────────────────────────────────────────────────── */
+  #lightbox {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,10,5,0.92);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  #lightbox.open { display: flex; }
+  #lightbox img {
+    max-width: 92vw; max-height: 88vh;
+    border-radius: 6px;
+    object-fit: contain;
+  }
+  #lightbox-close {
+    position: absolute; top: 1rem; right: 1.2rem;
+    color: var(--gold-light); font-size: 2rem;
+    cursor: pointer; background: none; border: none;
+    line-height: 1;
+  }
+
+  /* ── PDF download ─────────────────────────────────────────────────── */
+  #download {
+    text-align: center;
+    background: var(--sand);
+    padding: 3.5rem 1.2rem;
+  }
+  #download h2 {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+  #download p {
+    font-style: italic;
+    color: var(--cocoa-soft);
+    margin-bottom: 1.6rem;
+    font-size: 0.95rem;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--terra);
+    color: #fff;
+    text-decoration: none;
+    padding: 0.85rem 2.2rem;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #a8623e; }
+
+  /* ── RSVP form ───────────────────────────────────────────────────── */
+  .rsvp-field {
+    margin-bottom: 1.1rem;
+  }
+  .rsvp-field label {
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cocoa-soft);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+  }
+  .rsvp-field input[type="text"],
+  .rsvp-field input[type="number"],
+  .rsvp-field textarea {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid rgba(200,164,93,0.4);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--cocoa);
+    font-family: Georgia, serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .rsvp-field input:focus,
+  .rsvp-field textarea:focus {
+    border-color: var(--gold);
+  }
+  .rsvp-field textarea { resize: vertical; }
+  .rsvp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media(max-width:480px) { .rsvp-row { grid-template-columns: 1fr; } }
+  .rsvp-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .rsvp-radio {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--cocoa);
+  }
+  .rsvp-radio input { accent-color: var(--terra); width: 16px; height: 16px; }
+  .rsvp-btn {
+    margin-top: 0.5rem;
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 2.4rem;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  .rsvp-btn:hover { background: #a8623e; }
+
+  /* ── Sign-off ─────────────────────────────────────────────────────── */
+  #signoff {
+    text-align: center;
+    padding: 3.5rem 1.2rem 4rem;
+    background: var(--ivory);
+  }
+  #signoff .signoff-text {
+    font-style: italic;
+    color: var(--cocoa-soft);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  #signoff .signoff-names {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--terra);
+  }
+
+  /* ── Divider band ─────────────────────────────────────────────────── */
+  .band {
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.45;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Password screen ───────────────────────────────────────────────── -->
+<div id="password-screen">
+  <div class="pw-diamond"></div>
+  <h1>Jamie &amp; Beth's Bali Wedding</h1>
+  <p>This page is for invited guests only.<br>Please enter the password to continue.</p>
+  <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+  <button onclick="checkPassword()">Enter &rarr;</button>
+  <div id="password-error"></div>
+</div>
+
+<!-- ── Music ──────────────────────────────────────────────────────────── -->
+<audio id="bg-music" loop preload="none">
+  <!--
+    Recommended free track options (download and save as music.mp3 in this folder):
+    1. "Bali Gamelan" style: https://freemusicarchive.org  search "gamelan"
+    2. Romantic acoustic: https://pixabay.com/music  search "romantic acoustic guitar"
+    3. Specifically nice: "A Moment Apart" or "Chill Acoustic" on Pixabay (free, no attribution needed)
+    Once downloaded, rename to music.mp3 and place in this folder.
+  -->
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+<div id="music-wrap">
+  <span id="music-hint">&#9834; tap for music</span>
+  <button id="music-btn" onclick="toggleMusic()" title="Toggle music">&#9834;</button>
+</div>
+
+<!-- ── Hero ───────────────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-slideshow" id="slideshow"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-label">S A V E &nbsp; T H E &nbsp; D A T E &nbsp; ( A L M O S T )</div>
+    <div class="hero-names">Jamie &amp; Beth's</div>
+    <div class="hero-subtitle">Bali Wedding 2028</div>
+    <div class="hero-date">5th &ndash; 15th April &nbsp;&middot;&nbsp; Canggu, Bali</div>
+    <div class="hero-divider"><div class="diamond"></div></div>
+    <p style="color:rgba(255,255,255,0.82);font-style:italic;font-size:1rem;margin-bottom:1.6rem;">
+      We'd love you to join us.
+    </p>
+    <div class="countdown" id="countdown">
+      <div class="countdown-unit"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">days</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-hours">--</span><span class="countdown-label">hours</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-mins">--</span><span class="countdown-label">mins</span></div>
+      <span class="countdown-sep">:</span>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-secs">--</span><span class="countdown-label">secs</span></div>
+    </div>
+    <a href="#rsvp" class="hero-rsvp-btn">RSVP now &darr;</a>
+  </div>
+  <div class="scroll-hint">&#8595; &nbsp; scroll</div>
+</section>
+
+<!-- ── Intro ──────────────────────────────────────────────────────────── -->
+<div class="band"></div>
+<section id="intro" class="section">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <p class="tagline">We'd love you to join us for our wedding in Bali.</p>
+  <p>We're planning a 10-day villa stay from 5th to 15th April 2028, staying together at a beautiful private villa estate in Canggu. The wedding day is still to be confirmed, with the rest of the trip for relaxing, celebrating and enjoying Bali together.</p>
+  <p>If you'd like to arrive when the villa stay begins on 5th April, you'll likely need to fly on 4th April because of the travel time and time difference.</p>
+  <p>We know this is a big trip, so we wanted to share the estimated costs early to help you decide whether it feels affordable. There's absolutely no pressure &mdash; we completely understand that a destination wedding is a big commitment.</p>
+
+  <div style="margin-top:2rem;">
+    <div class="sec-head"><div class="sec-bar"></div><h2>Dates at a Glance</h2></div>
+    <div class="pills">
+      <div class="pill"><span class="pill-label">Trip Dates</span><span class="pill-value">5th&ndash;15th Apr 2028</span></div>
+      <div class="pill"><span class="pill-label">Location</span><span class="pill-value">Canggu, Bali</span></div>
+      <div class="pill"><span class="pill-label">Stay</span><span class="pill-value">10 nights</span></div>
+      <div class="pill"><span class="pill-label">Wedding Day</span><span class="pill-value">To be confirmed</span></div>
+    </div>
+    <p class="dates-note">We've tried hard to choose dates that work for as many people as possible. The 2028 Easter holidays aren't as aligned across schools as usual, and with 9 UK schools plus Italian schools to factor in, it hasn't been possible to find a perfect window for everyone. Easter was always our preferred time to celebrate, and it also helps avoid the higher prices of the summer holidays. We really hope these dates work for the majority, but completely understand if they don't work for everyone.</p>
+  </div>
+</section>
+
+<!-- ── What's Included ────────────────────────────────────────────────── -->
+<div class="band"></div>
+<section class="section">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <div class="sec-head"><div class="sec-bar"></div><h2>What's Included</h2></div>
+  <div class="card card-gold">
+    <ul>
+      <li class="sage">10 nights at a private villa estate in Canggu</li>
+      <li class="sage">Breakfast included every day</li>
+      <li class="sage">Premium private catering for lunch and dinner for 9 days</li>
+      <li class="sage">Separate catering included for the wedding day</li>
+      <li class="sage">Private chefs and butlers on-site</li>
+      <li class="sage">A small selection of drinks with meals, plus some daytime snacks</li>
+      <li class="sub-note" style="list-style:none;padding-left:1.5rem;">&ndash; <em>Other drinks and snacks can be purchased from the venue or local shops</em></li>
+      <li class="sage">Use of the villa estate, pools and shared spaces</li>
+    </ul>
+    <p class="note">You're very welcome to eat out at local restaurants or beach bars whenever you like. However, the villa catering will already be included and paid for as part of the package.</p>
+  </div>
+
+  <div class="sec-head" style="margin-top:1.5rem;"><div class="sec-bar"></div><h2>Villa Highlights</h2></div>
+  <div class="card card-sage">
+    <ul>
+      <li>Exclusive use of the private estate with 12 individual wooden villas</li>
+      <li>12 private swimming pools throughout the property</li>
+      <li>Lush tropical gardens with beautiful rice field views</li>
+      <li>Fully staffed from 7am to 11pm</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── Costs ──────────────────────────────────────────────────────────── -->
+<div class="band"></div>
+<section class="section">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <div class="sec-head"><div class="sec-bar"></div><h2>Estimated Cost Per Person</h2></div>
+  <div class="card card-gold">
+    <table class="cost-table">
+      <thead>
+        <tr>
+          <th>Cost item</th>
+          <th>13 years+</th>
+          <th>12 and under</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Indicative flights</td><td>&pound;1,106</td><td>&pound;762</td></tr>
+        <tr><td>Accommodation &amp; catering</td><td>&pound;563</td><td>&pound;563</td></tr>
+        <tr class="total-row"><td>Estimated total per person</td><td>&pound;1,669</td><td>&pound;1,325</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note">Includes indicative flights, 10 nights' accommodation and full-board villa catering.</p>
+  </div>
+
+  <!-- How will we pay -->
+  <div class="sec-head" style="margin-top:1.5rem;"><div class="sec-bar"></div><h2>How Will We Pay?</h2></div>
+  <div class="card card-gold">
+    <div class="pay-step">
+      <span class="step-num">1.</span>
+      <span class="step-body"><b>Flights</b> &mdash; booked and paid for directly by you. We'll share our flight details once booked, in case you'd like to travel with us.</span>
+    </div>
+    <div class="pay-step">
+      <span class="step-num">2.</span>
+      <span class="step-body"><b>Accommodation and catering</b> &mdash; paid to us as part of the group villa booking.</span>
+    </div>
+    <p class="pay-italic">Once we have final numbers, we will share a payment schedule for the accommodation element with you all.</p>
+  </div>
+
+  <!-- Note on pricing -->
+  <div class="sec-head" style="margin-top:1.5rem;"><div class="sec-bar"></div><h2>A Note on Pricing</h2></div>
+  <div class="card card-sand">
+    <p style="font-size:0.92rem;margin-bottom:0.7rem;">Flight costs are indicative, based on April 2027 prices. April 2028 flights aren't available yet. Cheaper and pricier options will likely exist.</p>
+    <p style="font-size:0.92rem;margin-bottom:0.7rem;">The villa price is agreed, although the final amount may change slightly due to exchange rate fluctuations. The &pound;563 per person estimate is based on current likely numbers.</p>
+    <p style="font-style:italic;font-size:0.88rem;color:var(--cocoa-soft);">We're also speaking with other caterers, so we may be able to reduce the catering cost. We'll confirm the final cost once we have firm responses.</p>
+  </div>
+
+  <!-- Extra drinks + Not included -->
+  <div class="card-row" style="margin-top:1rem;">
+    <div>
+      <div class="sec-head"><div class="sec-bar"></div><h2>Extra Drinks at the Villa</h2></div>
+      <div class="card card-sage">
+        <div class="drink-list">
+          <div class="drink-row"><span>Local beer</span><span class="drink-price">approx. &pound;1.75</span></div>
+          <div class="drink-row"><span>Soft drink</span><span class="drink-price">approx. &pound;0.75</span></div>
+          <div class="drink-row"><span>Fresh juice</span><span class="drink-price">approx. &pound;2.00</span></div>
+          <div class="drink-row"><span>Mocktail</span><span class="drink-price">approx. &pound;2.25</span></div>
+          <div class="drink-row"><span>Cocktail</span><span class="drink-price">approx. &pound;3.25</span></div>
+          <div class="drink-row"><span>Wine</span><span class="drink-price">approx. &pound;4.50 per glass</span></div>
+        </div>
+        <p class="note">Local supermarkets nearby if you'd like to keep costs lower.</p>
+      </div>
+    </div>
+    <div>
+      <div class="sec-head"><div class="sec-bar"></div><h2>What's Not Included</h2></div>
+      <div class="card card-plain">
+        <ul>
+          <li class="terra">Travel insurance</li>
+          <li class="terra">Local visas</li>
+          <li class="terra">Optional activities or day trips</li>
+          <li class="terra">Meals or drinks away from the villa</li>
+          <li class="terra">Extra drinks or personal spending</li>
+          <li class="terra">Airport transfers &mdash; can be arranged through the venue closer to the time. Indicatively &pound;20 for a family of 4.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── What we need ───────────────────────────────────────────────────── -->
+<div class="band"></div>
+<section class="section">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <div class="sec-head"><div class="sec-bar"></div><h2>What We Need From You Now</h2></div>
+  <div class="card card-sage">
+    <p style="margin-bottom:0.7rem;">Please RSVP on this form by the end of June to let us know whether you are a firm yes or no for joining us in Bali.</p>
+    <p style="margin-bottom:0.7rem;">We're sharing this information as early as we can to give everyone as much time as possible to think it through, plan and save.</p>
+    <p style="margin-bottom:0.7rem;">Because this is a group villa booking, the final cost depends on confirmed numbers. Once we've agreed the booking, any changes or drop-outs later may affect the cost for the rest of the group.</p>
+    <p style="margin-bottom:0.7rem;">There's absolutely no pressure &mdash; we completely understand this is a big trip. We just ask that you only say yes if you're comfortable with the estimated cost and feel sure you can come.</p>
+    <p>Once we have everyone's responses, we'll book the venue, confirm the final cost and next steps.</p>
+  </div>
+</section>
+
+<!-- Hidden form for Netlify form detection at build time -->
+<form name="rsvp" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name">
+  <input type="radio" name="attending">
+  <input type="number" name="adults">
+  <input type="number" name="children">
+  <textarea name="message"></textarea>
+</form>
+
+<!-- ── RSVP ────────────────────────────────────────────────────────────── -->
+<div class="band"></div>
+<section class="section" id="rsvp">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <div class="sec-head"><div class="sec-bar"></div><h2>RSVP</h2></div>
+  <p style="margin-bottom:1.4rem;color:var(--cocoa-soft);font-style:italic;">Please let us know by the end of June. There's no pressure — just let us know either way so we can plan.</p>
+
+  <form name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="rsvp-form">
+    <input type="hidden" name="form-name" value="rsvp">
+    <p style="display:none;"><input name="bot-field"></p>
+
+    <div class="rsvp-field">
+      <label>Your name</label>
+      <input type="text" name="name" required placeholder="First and last name">
+    </div>
+
+    <div class="rsvp-field">
+      <label>Will you be joining us in Bali?</label>
+      <div class="rsvp-radio-group">
+        <label class="rsvp-radio"><input type="radio" name="attending" value="Yes — we're in!" required> <span>Yes &mdash; we're in!</span></label>
+        <label class="rsvp-radio"><input type="radio" name="attending" value="No — sadly can't make it"> <span>No &mdash; sadly can't make it</span></label>
+      </div>
+    </div>
+
+    <div class="rsvp-row">
+      <div class="rsvp-field">
+        <label>Number of adults (13+)</label>
+        <input type="number" name="adults" min="0" max="20" placeholder="0">
+      </div>
+      <div class="rsvp-field">
+        <label>Number of children (12 and under)</label>
+        <input type="number" name="children" min="0" max="20" placeholder="0">
+      </div>
+    </div>
+
+    <div class="rsvp-field">
+      <label>Message or questions (optional)</label>
+      <textarea name="message" rows="4" placeholder="Anything you'd like to say..."></textarea>
+    </div>
+
+    <button type="submit" class="rsvp-btn">Send RSVP &rarr;</button>
+  </form>
+
+  <div id="rsvp-thanks" style="display:none;" class="card card-sage" style="text-align:center;margin-top:1rem;">
+    <p style="font-size:1.05rem;margin-bottom:0.4rem;">Thank you so much! &#10084;</p>
+    <p style="font-style:italic;color:var(--cocoa-soft);">We'll be in touch once we have everyone's responses.</p>
+  </div>
+</section>
+
+<!-- ── Gallery ────────────────────────────────────────────────────────── -->
+<section id="gallery">
+  <h2>A Glimpse of Bali</h2>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</section>
+
+<!-- ── Lightbox ───────────────────────────────────────────────────────── -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- ── Download ───────────────────────────────────────────────────────── -->
+<section id="download">
+  <h2>Full Information Sheet</h2>
+  <p>All the details in a beautifully designed PDF, ready to save or print.</p>
+  <a class="btn" href="jamie_beth_bali_wedding_costs_and_whats_included.pdf" download>
+    Download PDF &darr;
+  </a>
+</section>
+
+<!-- ── Map ───────────────────────────────────────────────────────────── -->
+<div class="band"></div>
+<section class="section" style="padding-bottom:0;">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <div class="sec-head"><div class="sec-bar"></div><h2>Where We'll Be</h2></div>
+  <p style="color:var(--cocoa-soft);font-style:italic;font-size:0.92rem;margin-bottom:1.2rem;">Canggu, Bali &mdash; tap the map to open in Google Maps for directions.</p>
+</section>
+<div style="width:100%;height:380px;">
+  <iframe
+    width="100%" height="100%"
+    style="border:0;display:block;"
+    loading="lazy"
+    allowfullscreen
+    referrerpolicy="no-referrer-when-downgrade"
+    src="https://www.google.com/maps?q=94FC%2BJJ+Munggu,+Badung+Regency,+Bali,+Indonesia&output=embed">
+  </iframe>
+</div>
+<div class="band"></div>
+
+<!-- ── Sign-off ───────────────────────────────────────────────────────── -->
+<section id="signoff">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <p class="signoff-text">We can't wait to celebrate with you.</p>
+  <p class="signoff-names">Jamie &amp; Beth</p>
+</section>
+
+<script>
+// ── Password ─────────────────────────────────────────────────────────────
+const SITE_PASSWORD = 'bali2028';
+const SESSION_KEY   = 'jb_auth';
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value.trim().toLowerCase();
+  if (val === SITE_PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    document.getElementById('password-screen').classList.add('hidden');
+  } else {
+    document.getElementById('password-error').textContent = 'Incorrect password — please try again.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+if (sessionStorage.getItem(SESSION_KEY) === '1') {
+  document.getElementById('password-screen').classList.add('hidden');
+}
+
+// ── Countdown ─────────────────────────────────────────────────────────────
+const weddingStart = new Date('2028-04-05T00:00:00');
+function updateCountdown() {
+  const now  = new Date();
+  const diff = weddingStart - now;
+  if (diff <= 0) {
+    document.getElementById('countdown').innerHTML = '<p style="color:var(--gold-light);font-style:italic;">We\'re in Bali! &#127965;</p>';
+    return;
+  }
+  const days  = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins  = Math.floor((diff % 3600000)  / 60000);
+  const secs  = Math.floor((diff % 60000)    / 1000);
+  document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── Images ───────────────────────────────────────────────────────────────
+const images = [
+  // First 10 used for hero slideshow
+  "main_pool_night.jpg",
+  "villa_pool_night.jpg",
+  "e9a58453-61c9-4133-b52d-1f13d1480117.jpeg.jpg",
+  "ff470413-37b1-4c81-bda8-1601902bc321.jpeg.jpg",
+  "a6f7c5b1-88f4-4927-b3a1-106a68c8788d.jpeg.jpg",
+  "6a87810a-7799-41ce-815f-bf41044ad122.jpg.jpg",
+  "03dab86f-aab2-4560-bf7a-09307df92acb.jpeg.jpg",
+  "fb7b9d97-e0e3-4583-ae80-5b166c9279c8.jpg.jpg",
+  // Gallery only
+  "ca467b4a-55f2-4a89-b207-eaec52adb5d7.jpg.jpg",
+  "e0718b6e-59f3-4733-8338-af8d8dd30dc7.jpg.jpg",
+  "9af970cd-7bf8-4189-b9dc-167f1287520f.jpeg.jpg",
+  "d8f1b031-68a5-4687-b437-a42268df2114.jpeg.jpg",
+  "258b2b59-628f-4c2f-b9ee-058ff4a55ccb.jpeg.jpg",
+  "9ba63eaf-36be-403c-a92b-e335703e5b71.jpg.jpg",
+  "6e36ea0d-a011-47d8-9c1a-bbd7a6e5f8df.jpeg.jpg",
+  "9008f992-d231-42b9-ad0d-3d8ffbbf7641.jpeg.jpg",
+  "6d4d7f6b-0bd2-4e2e-a321-fe1b51698e49.jpeg.jpg",
+  "a338e57f-5c39-4117-8312-f0fd59897f6d.jpeg.jpg",
+  "pool_close_up.jpg",
+  "rice field.jpeg",
+  "floating breakfast.jpg",
+  "gardens_pool_aerial.jpg",
+  "v1.jpg","v2.jpg","v3.jpg","v6.jpg",
+  "0dfc6b30-84e2-4c00-840d-9b6569165cf7.jpeg.jpg",
+  "0f151e4f-60d0-40a1-85bb-f2d489d79307.jpeg.jpg",
+  "187e9e26-fcdf-4001-ab97-471e99913474.jpg.jpg",
+  "2355d330-2127-4516-bb10-853dd603e047.jpg.jpg",
+  "327131b6-9cdd-412f-ad0c-6da247bfbc72.jpeg.jpg",
+  "35cd3049-4c21-4099-ae66-9b86ca4601e1.jpeg.jpg",
+  "4007d9ee-f24c-47e3-84c5-c78308216e7b.jpeg.jpg",
+  "44fdb0c3-420c-4d6b-a924-dadce3e9eb6c.jpeg.jpg",
+  "4bb90152-1e79-4ff5-8a71-1d7354123745.jpeg.jpg",
+  "4fd4124b-ae18-4a0e-bbe3-3f34563737d8.jpg.jpg",
+  "556cf6c4-eb44-472e-bc01-b78edbe99f3c.jpeg.jpg",
+  "56f26962-7da2-47ed-b435-5e7c982083a3.jpeg.jpg",
+  "5872e181-e5f3-4056-b006-fefd8d716403.jpeg.jpg",
+  "62bc82dd-0393-40cf-a3db-b16b0f770448.jpeg.jpg",
+  "6aeed685-d251-494b-9ccd-30086b7b1ff0.jpeg.jpg",
+  "6d96931b-977c-41b1-ae14-304e4628efb7.jpeg.jpg",
+  "750235a4-358f-4372-87c5-b8db241acc7d.jpg.jpg",
+  "807981d9-2fa8-4869-8a3f-245dfcf59f6a.jpeg.jpg",
+  "81e0dc9a-ce3f-4956-9861-1dd2b5226e34.jpeg.jpg",
+  "879c5cb6-94d5-4259-adaf-d80dc3c59abf.jpeg.jpg",
+  "880d6b16-580d-45e8-87b8-39c2cc5fcf8e.jpeg.jpg",
+  "85a9d0cc-9cde-44c0-8c31-aa54029326a3.jpeg.jpg",
+  "99e79393-c03d-4b32-a1d8-280136701e7a.jpg.jpg",
+  "9a2b1b8b-b917-4474-aa5b-e3187418305a.jpg.jpg",
+  "a18be82c-aa1d-4d30-b36b-698326cb8131.jpeg.jpg",
+  "a1f1852d-29c5-4db8-83b1-55f2cb12cae6.jpeg.jpg",
+  "c6f3a890-9e61-486b-859d-275387a289e4.jpeg.jpg",
+  "ce21e276-1ce1-4271-94e5-e6f100d0c36e.jpeg.jpg",
+  "d56d6839-962e-4ad3-a82f-85889aa91586.jpg.jpg",
+  "feff06d4-3cd0-4348-8b20-9e82bf5a4a8a.jpg.jpg",
+];
+
+// Hero slideshow
+const slideshow = document.getElementById('slideshow');
+const heroImgs  = images.slice(0, 10); // first 10 for hero
+let   current   = 0;
+
+heroImgs.forEach((src, i) => {
+  const div = document.createElement('div');
+  div.className = 'hero-slide' + (i === 0 ? ' active' : '');
+  div.style.backgroundImage = `url('${src}')`;
+  slideshow.appendChild(div);
+});
+
+function nextSlide() {
+  const slides = slideshow.querySelectorAll('.hero-slide');
+  slides[current].classList.remove('active');
+  current = (current + 1) % slides.length;
+  slides[current].classList.add('active');
+}
+setInterval(nextSlide, 4500);
+
+// Gallery grid
+const grid = document.getElementById('gallery-grid');
+images.forEach(src => {
+  const img = document.createElement('img');
+  img.className = 'gallery-img';
+  img.src   = src;
+  img.alt   = 'Bali villa';
+  img.loading = 'lazy';
+  img.onclick = () => openLightbox(src);
+  grid.appendChild(img);
+});
+
+// Lightbox
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+
+// RSVP form — show thank you message on submit
+const rsvpForm = document.getElementById('rsvp-form');
+if (rsvpForm) {
+  rsvpForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = new FormData(rsvpForm);
+    fetch('/', { method: 'POST', body: data })
+      .then(() => {
+        rsvpForm.style.display = 'none';
+        document.getElementById('rsvp-thanks').style.display = 'block';
+      })
+      .catch(() => rsvpForm.submit()); // fallback
+  });
+}
+
+// Music toggle
+let musicPlaying = false;
+const audio = document.getElementById('bg-music');
+function toggleMusic() {
+  if (musicPlaying) {
+    audio.pause();
+    document.getElementById('music-btn').innerHTML = '&#9834;';
+    document.getElementById('music-hint').classList.remove('hidden');
+  } else {
+    audio.play().catch(() => {});
+    document.getElementById('music-btn').innerHTML = '&#9646;&#9646;';
+    document.getElementById('music-hint').classList.add('hidden');
+  }
+  musicPlaying = !musicPlaying;
+}
+</script>
+</body>
+</html>
