@@ -35,7 +35,7 @@ CW     = W - 2*MARGIN
 CX     = W / 2
 
 def vimg(n):
-    return os.path.join(HERE, "venue_images", n)
+    return os.path.join(HERE, n)
 
 
 def register_fonts():
@@ -500,7 +500,7 @@ def page2(c):
     ]
     drink_note = "Local supermarkets nearby if you'd like to keep costs lower."
     need_paras = [
-        "Please let us know by the end of June whether you are a firm yes or no for joining us in Bali.",
+        "Please RSVP by Wednesday 9th July 2026 to let us know whether you are a firm yes or no for joining us in Bali.",
         ("We're sharing this information as early as we can to give everyone as much time as possible "
          "to think it through, plan and save."),
         ("Because this is a group villa booking, the final cost depends on confirmed numbers. Once "
