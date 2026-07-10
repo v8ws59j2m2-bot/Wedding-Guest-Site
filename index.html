@@ -902,15 +902,6 @@
   </div>
 </section>
 
-<!-- Hidden form for Netlify form detection at build time -->
-<form name="rsvp" data-netlify="true" netlify-honeypot="bot-field" hidden>
-  <input type="text" name="name">
-  <input type="radio" name="attending">
-  <input type="number" name="adults">
-  <input type="number" name="children">
-  <textarea name="message"></textarea>
-</form>
-
 <!-- ── RSVP ────────────────────────────────────────────────────────────── -->
 <div class="band"></div>
 <section class="section" id="rsvp">
@@ -918,37 +909,53 @@
   <div class="sec-head"><div class="sec-bar"></div><h2>RSVP</h2></div>
   <p style="margin-bottom:1.4rem;color:var(--cocoa-soft);font-style:italic;">Please RSVP by Wednesday 9th July 2026. There's no pressure — just let us know either way so we can plan.</p>
 
-  <form name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="rsvp-form">
+  <form
+    name="rsvp"
+    id="rsvp-form"
+    method="POST"
+    action="/"
+    netlify
+    netlify-honeypot="bot-field"
+  >
     <input type="hidden" name="form-name" value="rsvp">
-    <p style="display:none;"><input name="bot-field"></p>
+
+    <p hidden>
+      <label>Don't fill this out: <input name="bot-field"></label>
+    </p>
 
     <div class="rsvp-field">
-      <label>Your name</label>
-      <input type="text" name="name" required placeholder="First and last name">
+      <label for="rsvp-name">Your name</label>
+      <input type="text" id="rsvp-name" name="name" required placeholder="First and last name">
     </div>
 
     <div class="rsvp-field">
       <label>Will you be joining us in Bali?</label>
       <div class="rsvp-radio-group">
-        <label class="rsvp-radio"><input type="radio" name="attending" value="Yes — we're in!" required> <span>Yes &mdash; we're in!</span></label>
-        <label class="rsvp-radio"><input type="radio" name="attending" value="No — sadly can't make it"> <span>No &mdash; sadly can't make it</span></label>
+        <label class="rsvp-radio">
+          <input type="radio" name="attending" value="Yes - we're in!" required>
+          <span>Yes &mdash; we're in!</span>
+        </label>
+        <label class="rsvp-radio">
+          <input type="radio" name="attending" value="No - sadly can't make it">
+          <span>No &mdash; sadly can't make it</span>
+        </label>
       </div>
     </div>
 
     <div class="rsvp-row">
       <div class="rsvp-field">
-        <label>Number of adults (13+)</label>
-        <input type="number" name="adults" min="0" max="20" placeholder="0">
+        <label for="rsvp-adults">Number of adults (13+)</label>
+        <input type="number" id="rsvp-adults" name="adults" min="0" max="20" placeholder="0">
       </div>
       <div class="rsvp-field">
-        <label>Number of children (12 and under)</label>
-        <input type="number" name="children" min="0" max="20" placeholder="0">
+        <label for="rsvp-children">Number of children (12 and under)</label>
+        <input type="number" id="rsvp-children" name="children" min="0" max="20" placeholder="0">
       </div>
     </div>
 
     <div class="rsvp-field">
-      <label>Message or questions (optional)</label>
-      <textarea name="message" rows="4" placeholder="Anything you'd like to say..."></textarea>
+      <label for="rsvp-message">Message or questions (optional)</label>
+      <textarea id="rsvp-message" name="message" rows="4" placeholder="Anything you'd like to say..."></textarea>
     </div>
 
     <button type="submit" class="rsvp-btn">Send RSVP &rarr;</button>
@@ -1157,13 +1164,17 @@ const rsvpForm = document.getElementById('rsvp-form');
 if (rsvpForm) {
   rsvpForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    const data = new FormData(rsvpForm);
-    fetch('/', { method: 'POST', body: data })
+    const formData = new FormData(rsvpForm);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    })
       .then(() => {
         rsvpForm.style.display = 'none';
         document.getElementById('rsvp-thanks').style.display = 'block';
       })
-      .catch(() => rsvpForm.submit()); // fallback
+      .catch(() => rsvpForm.submit());
   });
 }
 
