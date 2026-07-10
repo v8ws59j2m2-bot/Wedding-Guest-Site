@@ -454,8 +454,17 @@ function normalizeRow(r) {
   };
 }
 
+function normalizeAttending(text) {
+  return (text || '')
+    .toLowerCase()
+    .replace(/[\u2013\u2014]/g, '-')  // en dash, em dash → hyphen
+    .replace(/[\u2018\u2019]/g, "'") // curly apostrophes
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function rowKey(r) {
-  return `${r.name.toLowerCase()}|${r.created_at}|${r.attending.toLowerCase()}`;
+  return `${r.name.toLowerCase().trim()}|${r.created_at}|${normalizeAttending(r.attending)}`;
 }
 
 function loadArchiveRows() {
