@@ -112,6 +112,25 @@
     padding: 0.5rem 1.4rem; border-radius: 5px;
     cursor: pointer; font-size: 0.85rem;
   }
+  .setup-summary {
+    display: none;
+    background: rgba(213,229,208,0.35);
+    border: 1px solid rgba(127,154,120,0.35);
+    border-radius: 8px; padding: 0.65rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem; color: var(--soft);
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem; flex-wrap: wrap;
+  }
+  .setup-summary.visible { display: flex; }
+  .setup-summary strong { color: var(--cocoa); }
+  .setup-summary-btn {
+    background: none; border: 1px solid var(--gold);
+    color: var(--cocoa); padding: 0.3rem 0.8rem;
+    border-radius: 5px; cursor: pointer; font-size: 0.8rem;
+    white-space: nowrap;
+  }
 
   .filters {
     display: flex; flex-wrap: wrap; gap: 0.6rem;
@@ -222,6 +241,11 @@
     </p>
   </div>
 
+  <div class="setup-summary" id="setup-summary">
+    <span><strong>Netlify connected</strong> — live RSVPs loading</span>
+    <button class="setup-summary-btn" onclick="openSettings()">Change token or Form ID</button>
+  </div>
+
   <div id="load-err"></div>
   <div id="summary" class="summary-grid" style="display:none"></div>
 
@@ -290,11 +314,23 @@ function adminLogout() {
   location.reload();
 }
 
+function updateSettingsUI() {
+  const token  = localStorage.getItem('jb_token');
+  const formId = localStorage.getItem('jb_form_id');
+  const saved  = !!(token && formId);
+  document.getElementById('setup-box').style.display = saved ? 'none' : 'block';
+  document.getElementById('setup-summary').classList.toggle('visible', saved);
+}
+
 function openSettings() {
-  const box = document.getElementById('setup-box');
-  box.style.display = 'block';
-  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('setup-box').style.display = 'block';
+  document.getElementById('setup-summary').classList.remove('visible');
+  document.getElementById('setup-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
   document.getElementById('cfg-token').focus();
+}
+
+function collapseSettings() {
+  updateSettingsUI();
 }
 
 function showAdmin() {
@@ -302,6 +338,7 @@ function showAdmin() {
   document.getElementById('admin-content').style.display = 'block';
   document.getElementById('cfg-token').value   = localStorage.getItem('jb_token')   || '';
   document.getElementById('cfg-form-id').value = localStorage.getItem('jb_form_id') || '';
+  updateSettingsUI();
   loadArchiveRows()
     .then(archive => {
       allRows = archive;
@@ -324,6 +361,7 @@ function saveConfig() {
   }
   localStorage.setItem('jb_token', token);
   localStorage.setItem('jb_form_id', formId);
+  collapseSettings();
   reloadAll();
 }
 
