@@ -66,26 +66,26 @@
 
   .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 0.8rem;
     margin-bottom: 1.5rem;
   }
   .stat-card {
     background: var(--card-bg);
-    border-radius: 10px; padding: 1.2rem;
+    border-radius: 10px; padding: 1.2rem 0.9rem;
     text-align: center;
     border: 1.5px solid rgba(200,164,93,0.35);
   }
-  .stat-card.yes  { border-color: var(--sage); background: rgba(213,229,208,0.35); }
-  .stat-card.no   { border-color: rgba(196,122,82,0.4); }
+  .stat-card.yes    { border-color: var(--sage); background: rgba(213,229,208,0.35); }
+  .stat-card.guests { border-color: var(--gold); background: rgba(232,213,163,0.3); }
   .stat-num {
     font-family: Georgia, serif; font-size: 2.2rem;
     color: var(--cocoa); line-height: 1;
   }
   .stat-label {
-    font-size: 0.72rem; color: var(--soft);
-    letter-spacing: 0.08em; margin-top: 0.3rem;
-    text-transform: uppercase;
+    font-size: 0.68rem; color: var(--soft);
+    letter-spacing: 0.04em; margin-top: 0.35rem;
+    line-height: 1.35;
   }
 
   .setup-box {
@@ -512,20 +512,31 @@ function renderAll() {
 
 function renderSummary(data) {
   const yes      = data.filter(s => isYes(s.attending));
-  const no       = data.filter(s => s.attending && s.attending.toLowerCase().startsWith('no'));
   const adults   = yes.reduce((a, s) => a + (parseInt(s.adults, 10)   || 0), 0);
   const children = yes.reduce((a, s) => a + (parseInt(s.children, 10) || 0), 0);
-  const archive  = data.filter(s => s.source === 'archive').length;
-  const live     = data.filter(s => s.source === 'new').length;
+  const guests   = adults + children;
 
   document.getElementById('summary').innerHTML = `
-    <div class="stat-card"><div class="stat-num">${data.length}</div><div class="stat-label">Total</div></div>
-    <div class="stat-card yes"><div class="stat-num">${yes.length}</div><div class="stat-label">Yes</div></div>
-    <div class="stat-card no"><div class="stat-num">${no.length}</div><div class="stat-label">No</div></div>
-    <div class="stat-card"><div class="stat-num">${adults}</div><div class="stat-label">Adults (yes)</div></div>
-    <div class="stat-card"><div class="stat-num">${children}</div><div class="stat-label">Children (yes)</div></div>
-    <div class="stat-card"><div class="stat-num">${archive}</div><div class="stat-label">Archive</div></div>
-    <div class="stat-card yes"><div class="stat-num">${live}</div><div class="stat-label">New</div></div>
+    <div class="stat-card">
+      <div class="stat-num">${data.length}</div>
+      <div class="stat-label">Total responses</div>
+    </div>
+    <div class="stat-card yes">
+      <div class="stat-num">${yes.length}</div>
+      <div class="stat-label">Yes responses</div>
+    </div>
+    <div class="stat-card guests">
+      <div class="stat-num">${guests}</div>
+      <div class="stat-label">Total attending guests</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${adults}</div>
+      <div class="stat-label">Total adults (yes)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${children}</div>
+      <div class="stat-label">Total children (yes)</div>
+    </div>
   `;
 }
 
