@@ -203,21 +203,22 @@
   <header>
     <h1>RSVP Responses</h1>
     <div class="header-actions">
+      <button class="refresh-btn" onclick="openSettings()">Settings</button>
       <button class="refresh-btn" onclick="reloadAll()">Refresh</button>
       <button class="logout-btn" onclick="adminLogout()">Sign out</button>
     </div>
   </header>
 
   <div class="setup-box" id="setup-box">
-    <strong>One-time setup per device:</strong><br>
-    Go to <strong>app.netlify.com → User settings → Applications → Personal access tokens</strong>, create a token, then paste it below along with your Form ID from <strong>Forms → rsvp → Form ID</strong>.<br><br>
-    <label><strong>Netlify API Token:</strong></label>
-    <input type="text" id="cfg-token" class="setup-input" placeholder="nfp_xxxxxxxxxxxx">
-    <label><strong>Form ID:</strong></label>
-    <input type="text" id="cfg-form-id" class="setup-input" placeholder="e.g. 6a2ea4e9f496a300089e0b20">
+    <strong>Netlify setup (both fields required):</strong><br>
+    You need <em>two</em> values from Netlify to load new RSVPs. Archive RSVPs from the CSV load automatically.<br><br>
+    <strong>1. API Token</strong> — <strong>app.netlify.com → User settings → Applications → Personal access tokens</strong><br>
+    <input type="text" id="cfg-token" class="setup-input" placeholder="Paste API token here (starts with nfp_)"><br>
+    <strong>2. Form ID</strong> — open your site in Netlify → <strong>Forms → rsvp</strong> → copy the <strong>Form ID</strong> shown at the top<br>
+    <input type="text" id="cfg-form-id" class="setup-input" placeholder="Paste Form ID here (e.g. 6a2ea4e9f496a300089e0b20)">
     <button class="setup-btn" onclick="saveConfig()">Save &amp; Load Responses</button>
     <p style="margin-top:1rem;font-size:0.82rem;">
-      Archive RSVPs load automatically from <code>rsvp-backup.csv</code> in this site folder.
+      Archive RSVPs load from <code>rsvp-backup.csv</code>. If you moved to a new Netlify project, make sure you enter the <strong>new</strong> Form ID.
     </p>
   </div>
 
@@ -287,6 +288,13 @@ function adminLogin() {
 function adminLogout() {
   sessionStorage.removeItem(ADMIN_KEY);
   location.reload();
+}
+
+function openSettings() {
+  const box = document.getElementById('setup-box');
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('cfg-token').focus();
 }
 
 function showAdmin() {
@@ -455,10 +463,6 @@ function renderAll() {
     document.getElementById('no-data').style.display = 'block';
     return;
   }
-
-  const token  = localStorage.getItem('jb_token');
-  const formId = localStorage.getItem('jb_form_id');
-  if (token && formId) document.getElementById('setup-box').style.display = 'none';
 
   document.getElementById('no-data').style.display = 'none';
   document.getElementById('summary').style.display = 'grid';
