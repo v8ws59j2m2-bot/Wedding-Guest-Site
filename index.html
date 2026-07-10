@@ -959,6 +959,7 @@
     </div>
 
     <button type="submit" class="rsvp-btn">Send RSVP &rarr;</button>
+    <p id="rsvp-error" hidden style="color:#c0392b;font-size:0.9rem;margin-top:0.6rem;text-align:center;"></p>
   </form>
 
   <div id="rsvp-thanks" style="display:none;" class="card card-sage" style="text-align:center;margin-top:1rem;">
@@ -1162,19 +1163,36 @@ document.getElementById('lightbox').addEventListener('click', function(e) {
 // RSVP form — show thank you message on submit
 const rsvpForm = document.getElementById('rsvp-form');
 if (rsvpForm) {
+  const submitBtn = rsvpForm.querySelector('.rsvp-btn');
+  const errEl = document.getElementById('rsvp-error');
   rsvpForm.addEventListener('submit', function(e) {
     e.preventDefault();
+    if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
     const formData = new FormData(rsvpForm);
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(formData).toString()
     })
-      .then(() => {
+      .then(response => {
+        if (!response.ok) throw new Error('RSVP failed');
         rsvpForm.style.display = 'none';
         document.getElementById('rsvp-thanks').style.display = 'block';
       })
-      .catch(() => rsvpForm.submit());
+      .catch(() => {
+        if (errEl) {
+          errEl.textContent = 'Something went wrong — please try again, or contact us directly.';
+          errEl.hidden = false;
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Send RSVP &rarr;';
+        }
+      });
   });
 }
 
