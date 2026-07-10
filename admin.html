@@ -24,7 +24,6 @@
     --card-bg: #FAF3E6;
   }
 
-  /* Login */
   #login-screen {
     max-width: 360px; margin: 4rem auto; text-align: center;
   }
@@ -48,8 +47,7 @@
   }
   #login-err { color: #c0392b; font-size: 0.85rem; margin-top: 0.5rem; min-height: 1.2em; }
 
-  /* Admin content */
-  #admin-content { display: none; max-width: 900px; margin: 0 auto; }
+  #admin-content { display: none; max-width: 960px; margin: 0 auto; }
   header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 2rem; flex-wrap: wrap; gap: 0.5rem;
@@ -58,18 +56,19 @@
     font-family: Georgia, serif; font-style: italic;
     font-size: 1.6rem; color: var(--cocoa);
   }
-  .logout-btn {
+  .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .logout-btn, .refresh-btn {
     background: none; border: 1px solid var(--terra);
     color: var(--terra); padding: 0.4rem 1rem;
     border-radius: 6px; cursor: pointer; font-size: 0.85rem;
   }
+  .refresh-btn { border-color: var(--gold); color: var(--cocoa); }
 
-  /* Summary cards */
   .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.8rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   .stat-card {
     background: var(--card-bg);
@@ -79,7 +78,6 @@
   }
   .stat-card.yes  { border-color: var(--sage); background: rgba(213,229,208,0.35); }
   .stat-card.no   { border-color: rgba(196,122,82,0.4); }
-  .stat-card.cost { border-color: var(--gold); background: rgba(232,213,163,0.25); }
   .stat-num {
     font-family: Georgia, serif; font-size: 2.2rem;
     color: var(--cocoa); line-height: 1;
@@ -90,33 +88,6 @@
     text-transform: uppercase;
   }
 
-  /* Submissions table */
-  .section-title {
-    font-family: Georgia, serif; font-size: 1.1rem;
-    margin-bottom: 0.8rem; color: var(--cocoa);
-    display: flex; align-items: center; gap: 0.6rem;
-  }
-  .section-title::after {
-    content: ''; flex: 1; height: 1px;
-    background: rgba(200,164,93,0.3);
-  }
-  table {
-    width: 100%; border-collapse: collapse;
-    font-size: 0.88rem; margin-bottom: 2rem;
-  }
-  th {
-    background: rgba(200,164,93,0.2);
-    padding: 0.6rem 0.8rem; text-align: left;
-    font-weight: 600; color: var(--soft);
-    font-size: 0.75rem; letter-spacing: 0.05em;
-  }
-  td { padding: 0.6rem 0.8rem; border-top: 1px solid rgba(200,164,93,0.15); vertical-align: top; }
-  tr:hover td { background: rgba(200,164,93,0.06); }
-  .yes-badge  { color: var(--sage); font-weight: 600; }
-  .no-badge   { color: var(--terra); font-weight: 600; }
-  .note-cell  { font-style: italic; color: var(--soft); max-width: 220px; }
-
-  /* Setup instructions */
   .setup-box {
     background: rgba(232,213,163,0.25);
     border: 1.5px solid rgba(200,164,93,0.4);
@@ -131,16 +102,94 @@
     padding: 0.1rem 0.4rem; border-radius: 3px;
     font-size: 0.85rem; color: var(--cocoa);
   }
+  .setup-input {
+    width: 100%; margin: 0.4rem 0 0.8rem; padding: 0.5rem;
+    border: 1px solid rgba(200,164,93,0.4); border-radius: 4px;
+    background: var(--card-bg); font-size: 0.85rem;
+  }
+  .setup-btn {
+    background: var(--terra); color: #fff; border: none;
+    padding: 0.5rem 1.4rem; border-radius: 5px;
+    cursor: pointer; font-size: 0.85rem;
+  }
 
-  #no-data {
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-bottom: 1rem; align-items: center;
+  }
+  .filters input, .filters select {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid rgba(200,164,93,0.4);
+    border-radius: 6px; background: var(--card-bg);
+    font-size: 0.85rem; color: var(--cocoa);
+  }
+  .filters input { flex: 1; min-width: 180px; }
+  .filter-count {
+    font-size: 0.82rem; color: var(--soft); font-style: italic;
+    margin-left: auto;
+  }
+
+  .section-title {
+    font-family: Georgia, serif; font-size: 1.1rem;
+    margin-bottom: 0.8rem; color: var(--cocoa);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(200,164,93,0.3);
+  }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.88rem; margin-bottom: 2rem;
+  }
+  th {
+    background: rgba(200,164,93,0.2);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; color: var(--soft);
+    font-size: 0.75rem; letter-spacing: 0.05em;
+    cursor: pointer; user-select: none; white-space: nowrap;
+  }
+  th:hover { background: rgba(200,164,93,0.32); }
+  th.sorted-asc::after  { content: ' ▲'; font-size: 0.65rem; }
+  th.sorted-desc::after { content: ' ▼'; font-size: 0.65rem; }
+  td { padding: 0.6rem 0.8rem; border-top: 1px solid rgba(200,164,93,0.15); vertical-align: top; }
+  tr:hover td { background: rgba(200,164,93,0.06); }
+  tr.row-archive td:first-child { border-left: 3px solid var(--sand); }
+  tr.row-new td:first-child { border-left: 3px solid var(--sage); }
+  .yes-badge  { color: var(--sage); font-weight: 600; }
+  .no-badge   { color: var(--terra); font-weight: 600; }
+  .note-cell  { font-style: italic; color: var(--soft); max-width: 220px; }
+  .source-badge {
+    display: inline-block; font-size: 0.68rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.15rem 0.45rem; border-radius: 4px;
+    font-weight: 600; white-space: nowrap;
+  }
+  .source-archive { background: rgba(242,227,207,0.8); color: var(--soft); }
+  .source-new     { background: rgba(213,229,208,0.7); color: #4a6b44; }
+
+  .legend {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    font-size: 0.8rem; color: var(--soft);
+    margin-bottom: 0.8rem;
+  }
+  .legend span { display: flex; align-items: center; gap: 0.35rem; }
+  .legend i {
+    display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+  }
+  .legend .i-archive { background: var(--sand); }
+  .legend .i-new     { background: var(--sage); }
+
+  #no-data, #load-err {
     text-align: center; color: var(--soft);
     font-style: italic; padding: 2rem 0;
   }
+  #load-err { color: #c0392b; display: none; }
 </style>
 </head>
 <body>
 
-<!-- Login -->
 <div id="login-screen">
   <h1>Jamie &amp; Beth</h1>
   <p>RSVP Admin — enter your admin password to continue.</p>
@@ -150,51 +199,79 @@
   <div id="login-err"></div>
 </div>
 
-<!-- Admin content -->
 <div id="admin-content">
   <header>
     <h1>RSVP Responses</h1>
-    <button class="logout-btn" onclick="adminLogout()">Sign out</button>
+    <div class="header-actions">
+      <button class="refresh-btn" onclick="reloadAll()">Refresh</button>
+      <button class="logout-btn" onclick="adminLogout()">Sign out</button>
+    </div>
   </header>
 
   <div class="setup-box" id="setup-box">
     <strong>One-time setup per device:</strong><br>
-    Go to <strong>app.netlify.com → User settings → Applications → Personal access tokens</strong>, create a token, paste it below and click Save. It will be remembered on this device.<br><br>
-    <strong>Netlify API Token:</strong><br>
-    <input type="text" id="cfg-token" placeholder="nfp_xxxxxxxxxxxx"
-           style="width:100%;margin:0.4rem 0 0.8rem;padding:0.5rem;border:1px solid rgba(200,164,93,0.4);border-radius:4px;background:var(--card-bg);font-size:0.85rem;">
-    <input type="hidden" id="cfg-form-id" value="6a2ea4e9f496a300089e0b20">
-    <button onclick="saveConfig()"
-            style="background:var(--terra);color:#fff;border:none;padding:0.5rem 1.4rem;border-radius:5px;cursor:pointer;font-size:0.85rem;">
-      Save &amp; Load Responses
-    </button>
+    Go to <strong>app.netlify.com → User settings → Applications → Personal access tokens</strong>, create a token, then paste it below along with your Form ID from <strong>Forms → rsvp → Form ID</strong>.<br><br>
+    <label><strong>Netlify API Token:</strong></label>
+    <input type="text" id="cfg-token" class="setup-input" placeholder="nfp_xxxxxxxxxxxx">
+    <label><strong>Form ID:</strong></label>
+    <input type="text" id="cfg-form-id" class="setup-input" placeholder="e.g. 6a2ea4e9f496a300089e0b20">
+    <button class="setup-btn" onclick="saveConfig()">Save &amp; Load Responses</button>
+    <p style="margin-top:1rem;font-size:0.82rem;">
+      Archive RSVPs load automatically from <code>rsvp-backup.csv</code> in this site folder.
+    </p>
   </div>
 
+  <div id="load-err"></div>
   <div id="summary" class="summary-grid" style="display:none"></div>
+
   <div id="responses-section" style="display:none">
     <div class="section-title">All responses</div>
+    <div class="legend">
+      <span><i class="i-archive"></i> Archive (CSV backup)</span>
+      <span><i class="i-new"></i> New (live Netlify form)</span>
+    </div>
+    <div class="filters">
+      <input type="search" id="filter-search" placeholder="Search name or message…" oninput="applyFilters()">
+      <select id="filter-source" onchange="applyFilters()">
+        <option value="all">All sources</option>
+        <option value="archive">Archive only</option>
+        <option value="new">New only</option>
+      </select>
+      <select id="filter-attending" onchange="applyFilters()">
+        <option value="all">All responses</option>
+        <option value="yes">Yes only</option>
+        <option value="no">No only</option>
+      </select>
+      <span class="filter-count" id="filter-count"></span>
+    </div>
     <div style="overflow-x:auto">
       <table id="responses-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Attending</th>
-            <th>Adults</th>
-            <th>Children</th>
-            <th>Message</th>
-            <th>Date</th>
+            <th data-sort="name">Name</th>
+            <th data-sort="attending">Attending</th>
+            <th data-sort="adults">Adults</th>
+            <th data-sort="children">Children</th>
+            <th data-sort="message">Message</th>
+            <th data-sort="source">Source</th>
+            <th data-sort="created_at">Date</th>
           </tr>
         </thead>
         <tbody id="responses-body"></tbody>
       </table>
     </div>
   </div>
-  <div id="no-data" style="display:none">No responses yet — check back soon!</div>
+  <div id="no-data" style="display:none">No responses found.</div>
 </div>
 
 <script>
 const ADMIN_PASSWORD = 'baliAdmin2028';
 const ADMIN_KEY      = 'jb_admin_auth';
+const CSV_PATH       = 'rsvp-backup.csv';
+
+let allRows    = [];
+let sortKey    = 'created_at';
+let sortDir    = 'desc';
 
 function adminLogin() {
   const val = document.getElementById('admin-pw').value.trim();
@@ -206,6 +283,7 @@ function adminLogin() {
     document.getElementById('admin-pw').value = '';
   }
 }
+
 function adminLogout() {
   sessionStorage.removeItem(ADMIN_KEY);
   location.reload();
@@ -214,71 +292,300 @@ function adminLogout() {
 function showAdmin() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-content').style.display = 'block';
-  // Pre-fill saved config
-  const token  = localStorage.getItem('jb_token')  || '';
-  const formId = localStorage.getItem('jb_form_id') || '';
-  document.getElementById('cfg-token').value   = token;
-  document.getElementById('cfg-form-id').value = formId;
-  if (token && formId) loadResponses(token, formId);
+  document.getElementById('cfg-token').value   = localStorage.getItem('jb_token')   || '';
+  document.getElementById('cfg-form-id').value = localStorage.getItem('jb_form_id') || '';
+  loadArchiveRows()
+    .then(archive => {
+      allRows = archive;
+      const token  = localStorage.getItem('jb_token');
+      const formId = localStorage.getItem('jb_form_id');
+      if (token && formId) return loadLiveRows(token, formId);
+    })
+    .then(() => renderAll())
+    .catch(err => showError(err.message || 'Could not load archive data.'));
 }
 
 if (sessionStorage.getItem(ADMIN_KEY) === '1') showAdmin();
 
 function saveConfig() {
   const token  = document.getElementById('cfg-token').value.trim();
-  const formId = '6a2ea4e9f496a300089e0b20';
-  if (!token) { alert('Please enter your Netlify API token.'); return; }
-  localStorage.setItem('jb_token',   token);
+  const formId = document.getElementById('cfg-form-id').value.trim();
+  if (!token || !formId) {
+    alert('Please enter both your Netlify API token and Form ID.');
+    return;
+  }
+  localStorage.setItem('jb_token', token);
   localStorage.setItem('jb_form_id', formId);
-  loadResponses(token, formId);
+  reloadAll();
 }
 
-function loadResponses(token, formId) {
-  fetch(`https://api.netlify.com/api/v1/forms/${formId}/submissions?access_token=${token}`)
+function reloadAll() {
+  hideError();
+  loadArchiveRows()
+    .then(archive => {
+      allRows = archive;
+      const token  = localStorage.getItem('jb_token');
+      const formId = localStorage.getItem('jb_form_id');
+      if (token && formId) return loadLiveRows(token, formId);
+    })
+    .then(() => renderAll())
+    .catch(err => showError(err.message || 'Could not load responses.'));
+}
+
+function showError(msg) {
+  const el = document.getElementById('load-err');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('load-err').style.display = 'none';
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let i = 0, field = '', row = [], inQuotes = false;
+
+  function pushField() {
+    row.push(field);
+    field = '';
+  }
+  function pushRow() {
+    if (row.length > 1 || row[0] !== '') rows.push(row);
+    row = [];
+  }
+
+  while (i < text.length) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += ch; i++; continue;
+    }
+    if (ch === '"') { inQuotes = true; i++; continue; }
+    if (ch === ',') { pushField(); i++; continue; }
+    if (ch === '\n' || ch === '\r') {
+      pushField(); pushRow();
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      i++; continue;
+    }
+    field += ch; i++;
+  }
+  pushField();
+  if (row.length) pushRow();
+  return rows;
+}
+
+function csvToRows(parsed) {
+  if (!parsed.length) return [];
+  const headers = parsed[0].map(h => h.trim());
+  return parsed.slice(1).filter(r => r.some(cell => cell.trim())).map(cells => {
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = cells[idx] || ''; });
+    return normalizeRow({
+      name:       obj.name,
+      attending:  obj.attending,
+      adults:     obj.adults,
+      children:   obj.children,
+      message:    obj.message,
+      created_at: obj.created_at,
+      source:     'archive'
+    });
+  });
+}
+
+function normalizeRow(r) {
+  return {
+    name:       (r.name || '').trim(),
+    attending:  (r.attending || '').trim(),
+    adults:     r.adults   || '0',
+    children:   r.children || '0',
+    message:    (r.message || '').trim(),
+    created_at: r.created_at || '',
+    source:     r.source === 'new' ? 'new' : 'archive'
+  };
+}
+
+function rowKey(r) {
+  return `${r.name.toLowerCase()}|${r.created_at}|${r.attending.toLowerCase()}`;
+}
+
+function loadArchiveRows() {
+  return fetch(CSV_PATH)
+    .then(r => {
+      if (!r.ok) throw new Error(`Could not load ${CSV_PATH}. Make sure the file is deployed with the site.`);
+      return r.text();
+    })
+    .then(text => csvToRows(parseCSV(text)));
+}
+
+function loadLiveRows(token, formId) {
+  return fetch(`https://api.netlify.com/api/v1/forms/${formId}/submissions?access_token=${token}`)
     .then(r => r.json())
     .then(data => {
-      if (!Array.isArray(data) || data.length === 0) {
-        document.getElementById('no-data').style.display = 'block';
-        return;
+      if (!Array.isArray(data)) {
+        throw new Error('Could not load live responses. Check your token and Form ID.');
       }
-      document.getElementById('setup-box').style.display = 'none';
-      document.getElementById('summary').style.display = 'grid';
-      document.getElementById('responses-section').style.display = 'block';
-      renderSummary(data);
-      renderTable(data);
-    })
-    .catch(() => alert('Could not load responses. Check your token and form ID.'));
+      const live = data.map(s => normalizeRow({
+        name:       s.data.name,
+        attending:  s.data.attending,
+        adults:     s.data.adults,
+        children:   s.data.children,
+        message:    s.data.message,
+        created_at: s.created_at,
+        source:     'new'
+      }));
+      const liveKeys = new Set(live.map(rowKey));
+      allRows = allRows.filter(r => !liveKeys.has(rowKey(r)));
+      allRows = allRows.concat(live);
+    });
+}
+
+function isYes(attending) {
+  return attending && attending.toLowerCase().startsWith('yes');
+}
+
+function renderAll() {
+  hideError();
+  if (!allRows.length) {
+    document.getElementById('summary').style.display = 'none';
+    document.getElementById('responses-section').style.display = 'none';
+    document.getElementById('no-data').style.display = 'block';
+    return;
+  }
+
+  const token  = localStorage.getItem('jb_token');
+  const formId = localStorage.getItem('jb_form_id');
+  if (token && formId) document.getElementById('setup-box').style.display = 'none';
+
+  document.getElementById('no-data').style.display = 'none';
+  document.getElementById('summary').style.display = 'grid';
+  document.getElementById('responses-section').style.display = 'block';
+  renderSummary(allRows);
+  applyFilters();
+  bindSortHeaders();
 }
 
 function renderSummary(data) {
-  const yes      = data.filter(s => s.data.attending && s.data.attending.startsWith('Yes'));
-  const no       = data.filter(s => s.data.attending && s.data.attending.startsWith('No'));
-  const adults   = data.reduce((a,s) => a + (parseInt(s.data.adults)   || 0), 0);
-  const children = data.reduce((a,s) => a + (parseInt(s.data.children) || 0), 0);
+  const yes      = data.filter(s => isYes(s.attending));
+  const no       = data.filter(s => s.attending && s.attending.toLowerCase().startsWith('no'));
+  const adults   = yes.reduce((a, s) => a + (parseInt(s.adults, 10)   || 0), 0);
+  const children = yes.reduce((a, s) => a + (parseInt(s.children, 10) || 0), 0);
+  const archive  = data.filter(s => s.source === 'archive').length;
+  const live     = data.filter(s => s.source === 'new').length;
+
   document.getElementById('summary').innerHTML = `
-    <div class="stat-card"><div class="stat-num">${data.length}</div><div class="stat-label">Total responses</div></div>
+    <div class="stat-card"><div class="stat-num">${data.length}</div><div class="stat-label">Total</div></div>
     <div class="stat-card yes"><div class="stat-num">${yes.length}</div><div class="stat-label">Yes</div></div>
     <div class="stat-card no"><div class="stat-num">${no.length}</div><div class="stat-label">No</div></div>
     <div class="stat-card"><div class="stat-num">${adults}</div><div class="stat-label">Adults (yes)</div></div>
     <div class="stat-card"><div class="stat-num">${children}</div><div class="stat-label">Children (yes)</div></div>
+    <div class="stat-card"><div class="stat-num">${archive}</div><div class="stat-label">Archive</div></div>
+    <div class="stat-card yes"><div class="stat-num">${live}</div><div class="stat-label">New</div></div>
   `;
 }
 
-function renderTable(data) {
+function getFilteredRows() {
+  const q        = document.getElementById('filter-search').value.toLowerCase().trim();
+  const source   = document.getElementById('filter-source').value;
+  const attending = document.getElementById('filter-attending').value;
+
+  return allRows.filter(r => {
+    if (source !== 'all' && r.source !== source) return false;
+    if (attending === 'yes' && !isYes(r.attending)) return false;
+    if (attending === 'no'  && !r.attending.toLowerCase().startsWith('no')) return false;
+    if (q) {
+      const hay = `${r.name} ${r.message}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function sortRows(rows) {
+  const sorted = [...rows];
+  sorted.sort((a, b) => {
+    let av = a[sortKey], bv = b[sortKey];
+    if (sortKey === 'adults' || sortKey === 'children') {
+      av = parseInt(av, 10) || 0;
+      bv = parseInt(bv, 10) || 0;
+    } else if (sortKey === 'created_at') {
+      av = new Date(av).getTime() || 0;
+      bv = new Date(bv).getTime() || 0;
+    } else {
+      av = String(av || '').toLowerCase();
+      bv = String(bv || '').toLowerCase();
+    }
+    if (av < bv) return sortDir === 'asc' ? -1 : 1;
+    if (av > bv) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return sorted;
+}
+
+function applyFilters() {
+  const filtered = sortRows(getFilteredRows());
+  document.getElementById('filter-count').textContent =
+    `Showing ${filtered.length} of ${allRows.length}`;
+  renderTable(filtered);
+  updateSortHeaders();
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+function esc(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderTable(rows) {
   const tbody = document.getElementById('responses-body');
-  tbody.innerHTML = data.map(s => {
-    const d    = s.data;
-    const date = new Date(s.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
-    const cls  = d.attending && d.attending.startsWith('Yes') ? 'yes-badge' : 'no-badge';
-    return `<tr>
-      <td><strong>${d.name || '—'}</strong></td>
-      <td class="${cls}">${d.attending || '—'}</td>
-      <td>${d.adults   || '0'}</td>
-      <td>${d.children || '0'}</td>
-      <td class="note-cell">${d.message || ''}</td>
-      <td style="white-space:nowrap;color:var(--soft)">${date}</td>
+  tbody.innerHTML = rows.map(r => {
+    const cls  = isYes(r.attending) ? 'yes-badge' : 'no-badge';
+    const src  = r.source === 'new' ? 'New' : 'Archive';
+    const srcCls = r.source === 'new' ? 'source-new' : 'source-archive';
+    const rowCls = r.source === 'new' ? 'row-new' : 'row-archive';
+    return `<tr class="${rowCls}">
+      <td><strong>${esc(r.name) || '—'}</strong></td>
+      <td class="${cls}">${esc(r.attending) || '—'}</td>
+      <td>${esc(r.adults)}</td>
+      <td>${esc(r.children)}</td>
+      <td class="note-cell">${esc(r.message)}</td>
+      <td><span class="source-badge ${srcCls}">${src}</span></td>
+      <td style="white-space:nowrap;color:var(--soft)">${formatDate(r.created_at)}</td>
     </tr>`;
   }).join('');
+}
+
+function bindSortHeaders() {
+  document.querySelectorAll('#responses-table th[data-sort]').forEach(th => {
+    th.onclick = () => {
+      const key = th.dataset.sort;
+      if (sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      else { sortKey = key; sortDir = key === 'created_at' ? 'desc' : 'asc'; }
+      applyFilters();
+    };
+  });
+}
+
+function updateSortHeaders() {
+  document.querySelectorAll('#responses-table th[data-sort]').forEach(th => {
+    th.classList.remove('sorted-asc', 'sorted-desc');
+    if (th.dataset.sort === sortKey) {
+      th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+    }
+  });
 }
 </script>
 </body>
