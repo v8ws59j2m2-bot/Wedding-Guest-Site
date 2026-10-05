@@ -703,9 +703,35 @@
     background: linear-gradient(to right, transparent, var(--gold), transparent);
     opacity: 0.45;
   }
+
+  /* Link to the updates page. Sits opposite the music control. */
+  #updates-link {
+    position: fixed;
+    top: 1.1rem; left: 1.1rem;
+    z-index: 100;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--gold-light);
+    background: rgba(30,16,8,0.55);
+    padding: 0.45rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(200,164,93,0.4);
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+  }
+  #updates-link:hover { background: rgba(30,16,8,0.8); }
+  #updates-link:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 3px;
+  }
 </style>
 </head>
 <body>
+
+<a id="updates-link" href="updates.html">Latest updates</a>
 
 <!-- ── Password screen ───────────────────────────────────────────────── -->
 <div id="password-screen">

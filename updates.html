@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latest Updates &mdash; Jamie &amp; Beth</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #FFF8EE;
+    color: #3B2A22;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  :root {
+    --ivory:      #FFF8EE;
+    --sand:       #F2E3CF;
+    --gold:       #C8A45D;
+    --gold-light: #E8D5A3;
+    --terra:      #C47A52;
+    --sage:       #7F9A78;
+    --cocoa:      #3B2A22;
+    --cocoa-soft: #7A6657;
+    --card-bg:    #FAF3E6;
+  }
+
+  h1, h2, h3 { font-weight: normal; }
+
+  /* ── Password screen (same gate as the wedding information page) ── */
+  #password-screen {
+    position: fixed; inset: 0;
+    background: var(--cocoa);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  #password-screen.hidden { display: none; }
+  #password-screen h1 {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--gold-light);
+  }
+  #password-screen p {
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  #password-screen input {
+    padding: 0.75rem 1.2rem;
+    border: 1.5px solid var(--gold);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 1rem;
+    font-family: Georgia, serif;
+    text-align: center;
+    letter-spacing: 0.1em;
+    width: 100%;
+    max-width: 280px;
+    outline: none;
+  }
+  #password-screen input::placeholder { color: rgba(255,255,255,0.35); }
+  #password-screen button {
+    background: var(--terra);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%; max-width: 280px;
+  }
+  #password-screen button:hover { background: #a8623e; }
+  #password-error {
+    color: #ff8a80;
+    font-size: 0.85rem;
+    font-style: italic;
+    min-height: 1.2em;
+  }
+  .pw-diamond {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    margin: 0 auto;
+  }
+
+  /* ── Back to the wedding information page ─────────────────────────── */
+  #home-link {
+    position: absolute;
+    top: 1.1rem; left: 1.1rem;
+    z-index: 3;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--gold-light);
+    background: rgba(30,16,8,0.55);
+    padding: 0.45rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(200,164,93,0.4);
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+  }
+  #home-link:hover { background: rgba(30,16,8,0.8); }
+  #home-link:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 3px;
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  #hero {
+    position: relative;
+    min-height: 68svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(30,16,8,0.62) 0%,
+        rgba(30,16,8,0.34) 55%,
+        rgba(30,16,8,0.58) 100%
+      ),
+      url('pool_close_up.jpg') center 42% / cover no-repeat;
+    padding: 5.5rem 1.4rem 4rem;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    max-width: 680px;
+  }
+  .hero-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    color: var(--gold-light);
+    margin-bottom: 1.2rem;
+  }
+  .hero-names {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    font-style: italic;
+    font-size: clamp(2.6rem, 8vw, 4.6rem);
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  .hero-subtitle {
+    font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+    letter-spacing: 0.06em;
+    color: var(--gold-light);
+    margin-bottom: 1.2rem;
+  }
+  .hero-date {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.82);
+  }
+  .hero-divider {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin: 1.6rem auto 0;
+    max-width: 220px;
+  }
+  .hero-divider::before,
+  .hero-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold-light);
+    opacity: 0.6;
+  }
+  .diamond {
+    width: 8px; height: 8px;
+    background: var(--gold-light);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .band {
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.45;
+  }
+
+  .section {
+    padding: 4rem 1.2rem;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .gold-rule {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin: 0.2rem 0 1.8rem;
+  }
+  .gold-rule::before, .gold-rule::after {
+    content: ''; flex: 1; max-width: 120px;
+    height: 1px; background: var(--gold); opacity: 0.55;
+  }
+  .gold-rule .diamond-sm {
+    width: 7px; height: 7px;
+    background: var(--gold); transform: rotate(45deg);
+  }
+
+  .intro { text-align: center; }
+  .intro .tagline {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--terra);
+    margin-bottom: 0.8rem;
+  }
+  .intro p {
+    color: var(--cocoa-soft);
+    max-width: 560px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+
+  /* ── Update entries ───────────────────────────────────────────────── */
+  #update-list { margin-top: 2.2rem; }
+
+  .update {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.5rem 1.5rem 1.4rem;
+    margin-bottom: 1rem;
+    border: 1.5px solid rgba(200,164,93,0.55);
+    text-align: left;
+  }
+  .update-date {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 0.45rem;
+  }
+  .update-title {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    font-size: 1.35rem;
+    color: var(--cocoa);
+    margin-bottom: 0.55rem;
+    line-height: 1.3;
+  }
+
+  .flight-route {
+    margin: 0.15rem 0 1.15rem;
+    background:
+      linear-gradient(180deg, rgba(232,213,163,0.38), rgba(255,248,238,0.05) 72%);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .flight-route svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .flight-arc {
+    stroke-dasharray: 1.6 7;
+    animation: route-flow 22s linear infinite;
+  }
+  @keyframes route-flow {
+    to { stroke-dashoffset: -180; }
+  }
+  .flight-route figcaption {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 7% 0.7rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cocoa-soft);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flight-arc { animation: none; }
+  }
+  .update-body {
+    color: var(--cocoa);
+    font-size: 0.98rem;
+  }
+  .update-body p + p { margin-top: 0.75rem; }
+
+  /* Flight copy stays one column. The intro rule would otherwise
+     narrow and centre each paragraph on its own. */
+  .flight-copy p {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+
+  .pay-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    margin-top: 1rem;
+  }
+  .pay-table thead tr { background: rgba(232,213,163,0.4); }
+  .pay-table th {
+    padding: 0.55rem 0.8rem;
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.82rem;
+    color: var(--cocoa);
+  }
+  .pay-table th:last-child,
+  .pay-table td:last-child { text-align: right; }
+  .pay-table td {
+    padding: 0.55rem 0.8rem;
+    border-top: 1px solid rgba(200,164,93,0.2);
+    color: var(--cocoa);
+  }
+  .pay-table tr.total-row {
+    background: rgba(196,122,82,0.10);
+    font-weight: bold;
+  }
+  .pay-table tr.total-row td:last-child { color: var(--terra); }
+  .pay-table + p { margin-top: 1.1rem; }
+
+  .included {
+    margin-top: 1.35rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid rgba(200,164,93,0.35);
+    text-align: left;
+  }
+  .included h3 {
+    font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', serif;
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: var(--cocoa);
+    margin-bottom: 0.4rem;
+  }
+  .included p {
+    max-width: none;
+    margin: 0;
+    text-align: left;
+    color: var(--cocoa-soft);
+  }
+  .included ul {
+    list-style: none;
+    margin: 0.75rem 0 0.85rem;
+    padding: 0;
+  }
+  .included li {
+    position: relative;
+    padding-left: 1.15rem;
+    margin: 0.45rem 0;
+    color: var(--cocoa);
+    font-style: normal;
+  }
+  .included li::before {
+    content: '';
+    position: absolute;
+    left: 0.05rem;
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .update.is-placeholder {
+    border-style: dashed;
+    background: rgba(242,227,207,0.35);
+    text-align: center;
+  }
+  .update.is-placeholder .update-title { font-style: italic; }
+  .update.is-placeholder .update-body { color: var(--cocoa-soft); font-style: italic; }
+
+  /* ── Link back into the original information page ─────────────────── */
+  .info-card {
+    margin-top: 1.6rem;
+    background: rgba(213,229,208,0.35);
+    border: 1.5px solid rgba(127,154,120,0.45);
+    border-radius: 10px;
+    padding: 1.4rem 1.5rem;
+    text-align: center;
+  }
+  .info-card p {
+    font-style: italic;
+    color: var(--cocoa-soft);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--terra);
+    color: #fff;
+    text-decoration: none;
+    padding: 0.85rem 2.2rem;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #a8623e; }
+  .btn:focus-visible {
+    outline: 2px solid var(--cocoa);
+    outline-offset: 3px;
+  }
+
+  #signoff {
+    text-align: center;
+    padding: 3.5rem 1.2rem 4rem;
+    background: var(--ivory);
+  }
+  #signoff .signoff-text {
+    font-style: italic;
+    color: var(--cocoa-soft);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  #signoff .signoff-names {
+    font-family: 'Palatino Linotype', Palatino, serif;
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--terra);
+  }
+
+  @media (max-width: 480px) {
+    #home-link { font-size: 0.64rem; padding: 0.4rem 0.65rem; }
+    .update { padding: 1.25rem 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="password-screen">
+  <div class="pw-diamond"></div>
+  <h1>Jamie &amp; Beth's Bali Wedding</h1>
+  <p>This page is for invited guests only.<br>Please enter the password to continue.</p>
+  <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')checkPassword()">
+  <button onclick="checkPassword()">Enter &rarr;</button>
+  <div id="password-error"></div>
+</div>
+
+<section id="hero">
+  <a id="home-link" href="index.html">Wedding information</a>
+  <div class="hero-content">
+    <div class="hero-label">L A T E S T &nbsp; U P D A T E S</div>
+    <h1 class="hero-names">Jamie &amp; Beth's</h1>
+    <div class="hero-subtitle">Bali Wedding 2028</div>
+    <div class="hero-date">5th &ndash; 15th April &nbsp;&middot;&nbsp; Canggu, Bali</div>
+    <div class="hero-divider"><div class="diamond"></div></div>
+  </div>
+</section>
+
+<div class="band"></div>
+
+<section class="section intro">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <p class="tagline">News for our guests.</p>
+  <p>We'll share what's new here, as plans come together.</p>
+
+  <div id="update-list">
+    <!-- Newest update first. -->
+    <article class="update">
+      <p class="update-date">5 October 2026</p>
+      <h2 class="update-title">Payment schedule</h2>
+      <div class="update-body">
+        <p>For everyone who has confirmed, here is the payment schedule. Each amount is per guest, and the same figure applies to every guest.</p>
+        <table class="pay-table">
+          <thead>
+            <tr>
+              <th scope="col">When</th>
+              <th scope="col">Per guest</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>End of November 2026</td>
+              <td>&pound;25</td>
+            </tr>
+            <tr>
+              <td>End of March 2027</td>
+              <td>&pound;100</td>
+            </tr>
+            <tr>
+              <td>End of May 2027</td>
+              <td>&pound;110</td>
+            </tr>
+            <tr>
+              <td>End of July 2027</td>
+              <td>&pound;110</td>
+            </tr>
+            <tr>
+              <td>End of November 2027</td>
+              <td>&pound;109</td>
+            </tr>
+            <tr>
+              <td>End of February 2028</td>
+              <td>&pound;100</td>
+            </tr>
+            <tr class="total-row">
+              <td>Total per guest</td>
+              <td>&pound;554</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="included">
+          <h3>What's included</h3>
+          <p>As a reminder, the payments you send to us cover:</p>
+          <ul>
+            <li>Accommodation at the villa from 5 to 15 April 2028</li>
+            <li>Breakfast, lunch and dinner, provided on site by private chefs, with an accompanying drinks package</li>
+          </ul>
+          <p>Catering on the wedding day itself (9 April) is covered by us.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="update" id="flights">
+      <p class="update-date">5 October 2026</p>
+      <h2 class="update-title">Flights</h2>
+      <figure class="flight-route" aria-label="A flight path from departure to Canggu, Bali">
+        <svg viewBox="0 20 640 150" aria-hidden="true">
+          <path d="M48 128 Q320 28 592 128" fill="none" stroke="#C8A45D" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round"/>
+          <path class="flight-arc" d="M48 128 Q320 28 592 128" fill="none" stroke="#C47A52" stroke-width="2.2" stroke-linecap="round"/>
+          <rect x="42" y="122" width="12" height="12" fill="#C8A45D" transform="rotate(45 48 128)"/>
+          <g transform="translate(592 128)" fill="none" stroke="#7F9A78" stroke-width="1.8" stroke-linecap="round">
+            <path d="M0 0 V-36"/>
+            <path d="M0 -20 C-16 -34 -26 -26 -24 -14"/>
+            <path d="M0 -22 C16 -38 28 -28 24 -14"/>
+            <path d="M0 -30 C-4 -48 16 -50 18 -34"/>
+          </g>
+          <rect x="586" y="122" width="12" height="12" fill="#C47A52" transform="rotate(45 592 128)"/>
+          <g transform="translate(318 74) rotate(90)" fill="#C47A52">
+            <path d="M0 -20 L4 -7 L18 -2.5 L18 2 L4 0.5 L2.4 13 L8 16.5 L8 19.5 L-8 19.5 L-8 16.5 L-2.4 13 L-4 0.5 L-18 2 L-18 -2.5 L-4 -7 Z"/>
+          </g>
+        </svg>
+        <figcaption>
+          <span>Depart</span>
+          <span>Canggu, Bali</span>
+        </figcaption>
+      </figure>
+      <div class="update-body flight-copy">
+        <p>Flights are separate from the villa payments above.</p>
+        <p>The original plan was for each group to book their own, which keeps things simple. There is now a chance of a better rate through one of Adam's travel contacts. If that option looks genuinely cheaper, we'll let you know &mdash; it may be worth booking together. You'll still be free to book your own if you'd rather.</p>
+        <p>Accommodation is reserved from 5 to 15 April 2028. Plan to travel either side of those dates so you can make the most of the time booked.</p>
+        <p>We expect flights to open around March or April 2027, and we'll update everyone as soon as options start appearing.</p>
+        <table class="pay-table">
+          <thead>
+            <tr>
+              <th scope="col">Indicative flights</th>
+              <th scope="col">Per person</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>13 years and over</td>
+              <td>&pound;1,106</td>
+            </tr>
+            <tr>
+              <td>12 and under</td>
+              <td>&pound;762</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+
+  <div class="info-card">
+    <p>Looking for the villa, costs, dates and how to RSVP?</p>
+    <a class="btn" href="index.html">Wedding information</a>
+  </div>
+</section>
+
+<div class="band"></div>
+
+<section id="signoff">
+  <div class="gold-rule"><div class="diamond-sm"></div></div>
+  <p class="signoff-text">We can't wait to celebrate with you.</p>
+  <p class="signoff-names">Jamie &amp; Beth</p>
+</section>
+
+<script>
+const SITE_PASSWORD = 'bali2028';
+const SESSION_KEY   = 'jb_auth';
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value.trim().toLowerCase();
+  if (val === SITE_PASSWORD) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    document.getElementById('password-screen').classList.add('hidden');
+  } else {
+    document.getElementById('password-error').textContent = 'Incorrect password — please try again.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+if (sessionStorage.getItem(SESSION_KEY) === '1') {
+  document.getElementById('password-screen').classList.add('hidden');
+}
+</script>
+</body>
+</html>
