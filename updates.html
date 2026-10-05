@@ -293,7 +293,8 @@
 
   /* Flight copy stays one column. The intro rule would otherwise
      narrow and centre each paragraph on its own. */
-  .flight-copy p {
+  .flight-copy p,
+  .pay-intro p {
     max-width: none;
     margin-left: 0;
     margin-right: 0;
@@ -468,9 +469,12 @@
     <!-- Newest update first. -->
     <article class="update">
       <p class="update-date">5 October 2026</p>
-      <h2 class="update-title">Payment schedule</h2>
+      <h2 class="update-title">Payment Schedule - Accommodation and Meals</h2>
       <div class="update-body">
-        <p>For everyone who has confirmed, here is the payment schedule. Each amount is per guest, and the same figure applies to every guest.</p>
+        <div class="pay-intro">
+          <p>Below is the payment schedule for everyone attending. The amounts are per guest, and the dates line up with when we need to pay the venue. If a date is ever going to be difficult, just let us know and we'll work something out.</p>
+          <p>You're welcome to pay your balance sooner if you'd prefer. We'll keep track of each party's balance, so you don't need to.</p>
+        </div>
         <table class="pay-table">
           <thead>
             <tr>
@@ -497,7 +501,7 @@
             </tr>
             <tr>
               <td>End of November 2027</td>
-              <td>&pound;109</td>
+              <td>&pound;111</td>
             </tr>
             <tr>
               <td>End of February 2028</td>
@@ -505,7 +509,7 @@
             </tr>
             <tr class="total-row">
               <td>Total per guest</td>
-              <td>&pound;554</td>
+              <td>&pound;556</td>
             </tr>
           </tbody>
         </table>
